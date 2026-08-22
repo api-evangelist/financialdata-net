@@ -55,6 +55,18 @@ apis:
     properties:
       - type: Documentation
         url: https://financialdata.net/documentation
+      - type: APIReference
+        url: https://financialdata.net/documentation
+      - type: Examples
+        url: examples/financialdata-net-response-examples.yml
+      - type: Authentication
+        url: authentication/financialdata-net-authentication.yml
+      - type: RateLimits
+        url: rate-limits/financialdata-net-rate-limits.yml
+      - type: ErrorCatalog
+        url: errors/financialdata-net-problem-types.yml
+      - type: DataModel
+        url: data-model/financialdata-net-data-model.yml
   - name: FinancialData.Net MCP Server
     description: >-
       Hosted MCP server mapping the entire REST API documentation into callable MCP tools (e.g., getStockSymbols,
@@ -82,14 +94,74 @@ apis:
       - trading
     properties:
       - type: MCPServer
-        url: https://financialdata.net/mcp
+        url: mcp/financialdata-net-mcp.yml
       - type: Documentation
         url: https://financialdata.net/mcp-server
+image: https://financialdata.net/static/images/favicon.ico
 maintainers:
   - FN: FinancialData.Net
     url: https://financialdata.net
+    email: info@financialdata.net
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 90
   at: '2026-08-22T08:47:53.698Z'
+common:
+- type: DomainSecurity
+  url: security/financialdata-net-domain-security.yml
+- type: Packages
+  url: packages/financialdata-net-packages.yml
+- type: SDKs
+  url: packages/financialdata-net-packages.yml
+- type: LLMsTxt
+  url: llms/financialdata-net-llms.txt
+- type: Authentication
+  url: authentication/financialdata-net-authentication.yml
+- type: Conventions
+  url: conventions/financialdata-net-conventions.yml
+- type: ErrorCatalog
+  url: errors/financialdata-net-problem-types.yml
+- type: DataModel
+  url: data-model/financialdata-net-data-model.yml
+- type: Examples
+  url: examples/financialdata-net-response-examples.yml
+- type: Conformance
+  url: conformance/financialdata-net-conformance.yml
+- type: Lifecycle
+  url: lifecycle/financialdata-net-lifecycle.yml
+- type: ChangeLog
+  url: changelog/financialdata-net-changelog.yml
+- type: StatusPage
+  url: https://financialdata.instatus.com
+- type: Plans
+  url: plans/financialdata-net-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/financialdata-net-rate-limits.yml
+- type: Components
+  url: components/financialdata-net-components.yml
+- type: Website
+  url: https://financialdata.net
+- type: DeveloperPortal
+  url: https://financialdata.net
+- type: Pricing
+  url: https://financialdata.net/pricing
+- type: SignUp
+  url: https://financialdata.net/sign-up
+- type: Login
+  url: https://financialdata.net/sign-in
+- type: Support
+  url: https://financialdata.net/contact-us
+- type: HelpCenter
+  url: https://financialdata.net/faq
+- type: TermsOfService
+  url: https://financialdata.net/terms-of-service
+- type: PrivacyPolicy
+  url: https://financialdata.net/privacy-policy
+- type: GitHubOrganization
+  url: https://github.com/financialdatanet
+x-enrichment:
+  date: '2026-08-22'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1

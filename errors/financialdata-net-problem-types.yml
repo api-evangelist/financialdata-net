@@ -1,0 +1,62 @@
+generated: '2026-08-22'
+method: probed
+source: live probes of https://financialdata.net/api/v1/* (2026-08-22); https://financialdata.net/documentation
+note: >-
+  FinancialData.Net publishes NO error reference. The documentation has no errors section, no status
+  code table and no error code list — the 86 endpoint sections document only the happy-path response.
+  Everything below was observed on the wire rather than read from a page, which is why method is
+  `probed` and why the catalogue is short: these are the errors that could be triggered without a
+  paid key. Not RFC 9457: responses are application/json with a single `message` string, no `type`
+  URI, no `title`, no `detail`, no `instance`, and no machine-readable code. An agent cannot branch
+  on anything but the HTTP status and an English string, and the string is identical for a missing
+  key and an invalid one.
+format: bespoke-json-message
+rfc9457: false
+envelope:
+  media_type: application/json
+  shape: '{"message": "<string>"}'
+  fields:
+    - name: message
+      type: string
+      description: Human-readable explanation. The only field. No stable code to switch on.
+problem_types:
+  - status: 401
+    title: Invalid API key
+    envelope: '{"message": "Invalid API key"}'
+    media_type: application/json
+    observed: true
+    triggers:
+      - No `key` query parameter supplied.
+      - '`key` supplied but not a valid account key.'
+    remediation: >-
+      Append ?key=API_KEY (or &key=API_KEY) to the request URL using the key from the account
+      dashboard. The same message is returned for a missing key and a malformed one, so an agent
+      cannot distinguish "forgot the key" from "key was revoked" without checking its own config.
+    source: 'probed: GET /api/v1/stock-symbols and GET /api/v1/stock-symbols?key=<invalid>'
+  - status: 404
+    title: Not Found
+    envelope: 'text/html: "<h1>Not Found</h1><p>The requested resource was not found on this server.</p>"'
+    media_type: text/html
+    observed: true
+    triggers:
+      - Request to a path that is not one of the 86 documented v1 endpoints.
+    remediation: >-
+      Check the endpoint slug against https://financialdata.net/documentation. NOTE FOR AGENTS: an
+      unknown endpoint returns HTML, not JSON, even under /api/v1/. A client that assumes a JSON body
+      on every API response will throw a parse error rather than surface a clean 404.
+    source: 'probed: GET /api/v1/does-not-exist?key=x'
+undocumented:
+  - concern: plan-gated endpoint
+    note: >-
+      9 of the 86 endpoints answer on the Free plan; the rest require a paid tier. The status and
+      body returned when a valid key requests an endpoint above its plan are NOT documented and
+      could not be observed without a paid key. This is the single most useful error an integrating
+      agent would need and it is unpublished.
+  - concern: rate-limit exhaustion
+    note: >-
+      Status code and body on exceeding 300 requests/day (Free) or the per-second ceiling (paid) are
+      not documented and were not provoked. No Retry-After header exists on any observed response.
+  - concern: invalid parameter values
+    note: >-
+      Behaviour for an unknown `identifier`, a malformed `date`, a `period` other than year/quarter,
+      or an `offset` beyond the dataset is not documented.

@@ -1,0 +1,60 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/excel-addin, https://financialdata.net/viewer, https://financialdata.net/changelog
+note: >-
+  FinancialData.Net ships no web components, element library, embeddable widget or embeddable
+  dashboard — there is no JavaScript loader, no script tag, no CDN bundle and no npm package of any
+  kind. What it does ship in this category is an OFFICE add-in: a first-party client-side surface
+  that renders the API into a host application (Excel) through a single custom function. It is
+  recorded here rather than in packages/ as a code library because it is a prebuilt client surface
+  a non-developer installs, not something a developer imports — though the same add-in also appears
+  in packages/financialdata-net-packages.yml as a distributed artifact. There is also a hosted
+  browser data viewer, but it is a first-party page on the provider's own site rather than something
+  a customer embeds.
+families:
+  - name: Excel Add-in
+    kind: office-addin
+    url: https://financialdata.net/excel-addin
+    distribution: Microsoft add-in store ("FinancialData.Net for Excel"), installed from Excel > Home > Add-ins
+    hosts: [Microsoft Excel desktop, Excel on the web, Microsoft 365]
+    launched: '2026-04-20'
+    plans: [Standard, Premium, Professional, Enterprise]
+    auth: API key saved in the add-in task pane (same key as the REST API)
+    components:
+      - name: FDN custom function
+        signature: '=FDN(dataset, identifier, argument, maxRows)'
+        description: >-
+          One dynamic-array worksheet function covering the whole API. `dataset` is the PascalCase
+          form of the REST endpoint (StockQuotes, IncomeStatements, IndexConstituents, OptionChain,
+          CryptoPrices, ForexQuotes, KeyMetrics, EmployeeCount, InsiderTransactions, SenateTrading,
+          EtfPrices, InstitutionalHoldings, ...), matching the same naming rule the MCP server uses
+          for its tool names. Results spill into the sheet rather than requiring a drag-fill.
+        published_examples:
+          - '=FDN("StockQuotes","AAPL,MSFT,NVDA","",3)'
+          - '=FDN("IncomeStatements","MSFT","year",5)'
+          - '=FDN("CompanyInformation","MSFT","",1)'
+          - '=FDN("IndexConstituents","^GSPC","",50)'
+          - '=FDN("OptionChain","MSFT","",20)'
+      - name: Formula builder task pane
+        description: >-
+          Visual formula construction inside the add-in task pane — pick a dataset and arguments
+          rather than typing the function, with dataset browsing.
+    note: >-
+      A per-dataset guide page exists for each endpoint ("Get Stock Prices in Excel", "Get Option
+      Greeks in Excel", ...), giving the add-in the same 86-surface coverage as the REST API.
+  - name: Data Viewer
+    kind: hosted-page
+    url: https://financialdata.net/viewer
+    description: >-
+      A signed-in browser view over the datasets, linked from the primary site navigation. Not
+      embeddable and not a component library — recorded for completeness because it is the third
+      first-party client surface over the same API.
+    embeddable: false
+    note: >-
+      Probed anonymously 2026-08-22: returns HTTP 200 but serves the sign-in shell (3 KB), so its
+      capabilities could not be inspected without an account.
+not_found:
+  - web components / custom elements
+  - JavaScript element or widget library (no npm package, no CDN bundle, no script tag)
+  - embeddable iframe dashboards
+  - hosted checkout or prebuilt UI flows

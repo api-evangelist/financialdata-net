@@ -1,0 +1,62 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/pricing, https://financialdata.net/documentation, live probe of https://financialdata.net/api/v1/stock-symbols
+note: >-
+  Limits are published as a headline number on each pricing tier and nowhere else — there is no
+  rate-limit reference page in the documentation. The FREE tier is capped per DAY; every paid tier
+  is capped per SECOND. No runtime signal was observed: an unauthenticated GET of
+  https://financialdata.net/api/v1/stock-symbols (probed 2026-08-22) returned HTTP 401 with only
+  Server, Date, Content-Type, Content-Length, Connection, X-Frame-Options, X-Content-Type-Options
+  and Referrer-Policy — no X-RateLimit-*, no RateLimit-*, no Retry-After. The response status
+  returned on exhaustion is not documented and could not be observed without a key, so it is
+  recorded null rather than assumed to be 429. An agent integrating this API has to enforce the
+  ceiling client-side from the plan it bought; the API tells it nothing at runtime.
+limit_count: 5
+limits:
+  - scope: per-key
+    plan: Free
+    window: day
+    limit: 300
+    burst: null
+    unit: requests
+  - scope: per-key
+    plan: Standard
+    window: second
+    limit: 10
+    burst: null
+    unit: requests
+  - scope: per-key
+    plan: Premium
+    window: second
+    limit: 30
+    burst: null
+    unit: requests
+  - scope: per-key
+    plan: Professional
+    window: second
+    limit: 30
+    burst: null
+    unit: requests
+  - scope: per-key
+    plan: Enterprise
+    window: second
+    limit: 50
+    burst: null
+    unit: requests
+response_headers:
+  documented: []
+  observed: []
+  observed_note: >-
+    Probed on a 401 response 2026-08-22; the API returns no rate-limit headers of any family.
+exhaustion:
+  status_code: null
+  body: null
+  retry_after: null
+  note: Not documented by the provider and not observable without an authenticated key.
+record_limits:
+  note: >-
+    Separate from rate limiting, most endpoints cap the number of RECORDS returned per call
+    (300 or 500 depending on the endpoint, stated in each endpoint's description). Callers page
+    through the remainder with the `offset` query parameter. This is a payload cap, not a
+    throttle, and it is the pagination contract — see conventions/financialdata-net-conventions.yml.
+  values: [300, 500]

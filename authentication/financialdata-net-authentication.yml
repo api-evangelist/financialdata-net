@@ -1,0 +1,58 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/documentation (Introduction), https://financialdata.net/faq, https://financialdata.net/mcp-server, live probes of https://financialdata.net/api/v1/stock-symbols
+docs: https://financialdata.net/documentation
+note: >-
+  Single-scheme API. There is no OpenAPI to derive securitySchemes from, so this profile is read
+  from the provider's own documentation and confirmed against live probes. The API key is a
+  QUERY-STRING parameter, not a header — the docs say "ensure that each URL ends with ?key=API_KEY.
+  If the URL already contains other query parameters, use &key=API_KEY". The same key authenticates
+  the REST API, the Python SDK, the Excel add-in and the hosted MCP server. Keys are issued from the
+  signed-in account dashboard; there is no OAuth, no OIDC, no mTLS, no signed requests, and no
+  documented key rotation, expiry, scoping or per-key restriction. /.well-known/openid-configuration,
+  /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource all return 404.
+  Because the credential rides in the URL it is exposed to proxy logs, browser history, referrer
+  headers and CDN access logs — worth flagging to any agent that constructs request URLs from
+  templates or logs them.
+schemes:
+  - id: api_key_query
+    type: apiKey
+    in: query
+    name: key
+    description: >-
+      Account API key appended to every request URL as ?key=API_KEY (or &key=API_KEY when other
+      query parameters are already present). Obtained from the account dashboard after sign-in.
+    required: true
+    applies_to:
+      - REST API (https://financialdata.net/api/v1/*)
+      - MCP server (https://financialdata.net/mcp?key=API_KEY)
+      - Python SDK (FinancialDataClient(api_key=...))
+      - Excel add-in (key saved in the task pane)
+oauth2: false
+openid_connect: false
+mutual_tls: false
+signed_requests: false
+key_management:
+  issuance: Account dashboard at https://financialdata.net after sign-in
+  rotation_documented: false
+  expiry_documented: false
+  scoping_documented: false
+  multiple_keys_documented: false
+  ip_allowlist_documented: false
+observed:
+  - probe: GET https://financialdata.net/api/v1/stock-symbols
+    status: 401
+    body: '{"message": "Invalid API key"}'
+    note: No key supplied.
+  - probe: GET https://financialdata.net/api/v1/stock-symbols?key=<invalid>
+    status: 401
+    body: '{"message": "Invalid API key"}'
+    note: Same envelope for a malformed key — no distinction between missing and invalid.
+  - probe: 'POST https://financialdata.net/mcp {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    status: 200
+    body: '{"jsonrpc":"2.0","id":null,"error":{"code":-32001,"message":"Unauthorized"}}'
+    note: MCP returns HTTP 200 with a JSON-RPC error rather than a 401, per the JSON-RPC convention.
+plan_gating: >-
+  Authentication succeeds or fails on the key alone; the PLAN attached to the key then decides which
+  of the 86 endpoints answer. 9 endpoints are on Free, 43 cumulative on Standard, all 86 on Premium
+  and above; the MCP server additionally requires Professional or Enterprise.

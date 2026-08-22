@@ -1,0 +1,62 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/documentation, https://github.com/financialdatanet/fdnpy, https://pypi.org/pypi/fdnpy/json, https://financialdata.net/excel-addin
+note: >-
+  FinancialData.Net links exactly one first-party client library from its own documentation
+  ("we recommend using our official Python SDK"), plus an Excel add-in distributed through the
+  Microsoft add-in store. No JavaScript/TypeScript, Java, .NET, Go, Ruby, PHP or Rust client was
+  found on npm, Maven Central, NuGet, pkg.go.dev, RubyGems, Packagist or crates.io — those
+  registries were queried and returned no first-party package.
+packages:
+  - name: fdnpy
+    language: python
+    registry: pypi
+    url: https://pypi.org/project/fdnpy/
+    repository: https://github.com/financialdatanet/fdnpy
+    install: pip install fdnpy
+    official: true
+    version: 0.5.0
+    published: '2026-07-24'
+    license: null
+    note: >-
+      Official Python SDK, linked from the provider's own documentation introduction. Entry point
+      FinancialDataClient(api_key=...); wraps every documented v1 endpoint as a get_<endpoint>()
+      method, with automatic pagination over the `offset` parameter and retries with exponential
+      backoff. Repository carries no LICENSE file and publishes no GitHub releases (tags only on
+      PyPI). Five published versions: 0.1.0 -> 0.5.0. Latest release 2026-07-24 is the same day as
+      the newest documented API additions (Analyst Consensus, International Key Metrics, Economic
+      Data), so the SDK is current with the API surface.
+  - name: FinancialData.Net for Excel
+    language: excel-office-addin
+    registry: microsoft-appsource
+    url: https://financialdata.net/excel-addin
+    repository: null
+    install: 'Excel > Home > Add-ins > search "FinancialData.Net for Excel"'
+    official: true
+    version: null
+    published: null
+    note: >-
+      Office add-in exposing a single custom function =FDN(dataset, identifier, argument, maxRows)
+      over the same v1 endpoints, plus a task pane formula builder; supports Excel on the web /
+      Microsoft 365. Distributed through the Microsoft add-in store rather than a code registry,
+      so there is no metadata endpoint to query — version and publication date could not be read
+      and are recorded null rather than guessed. Provider changelog dates its launch 2026-04-20.
+registries_checked:
+  - registry: pypi
+    query: fdnpy
+    result: found
+  - registry: npm
+    query: 'fdnpy, fdnjs, financialdata, financialdata-net, @financialdata/mcp, text search "financialdata.net"'
+    result: none
+  - registry: maven-central
+    result: none
+  - registry: nuget
+    result: none
+  - registry: pkg.go.dev
+    result: none
+  - registry: rubygems
+    result: none
+  - registry: packagist
+    result: none
+  - registry: crates.io
+    result: none

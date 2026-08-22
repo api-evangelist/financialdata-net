@@ -1,0 +1,117 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/pricing
+note: >-
+  Five self-serve tiers published openly on the pricing page, each with both a monthly and an
+  annual price (the annual price is billed yearly and marketed as "30% off"). There is no
+  "contact us" enterprise tier: the top tier, Enterprise, is priced publicly at $299/month.
+  Personal-use and Commercial-use are presented as two tabs over the same ladder — Free/Standard/
+  Premium are personal-use only, Professional adds internal commercial use, and Enterprise adds
+  external commercial use plus data display and redistribution rights. The quota attached to each
+  tier is a request-rate limit, not a request allowance, except on Free which is a daily cap.
+  Payment methods published on the FAQ: credit and debit cards, PayPal, Google Pay, Apple Pay,
+  Link. Minimum subscription 1 month; cancel any time; all purchases non-refundable
+  (Terms of Service section on subscriptions).
+currency: USD
+plan_count: 5
+plans:
+  - name: Free
+    price: 0
+    currency: USD
+    billing_period: month
+    annual_price: 0
+    use: personal
+    included_quota: 300 requests per day
+    rate_limit: 300 requests/day
+    overage: null
+    endpoints_included: 9
+    features:
+      - REST API
+      - Python SDK
+      - Symbol Lists
+      - Market & Miscellaneous Data
+  - name: Standard
+    price: 29
+    currency: USD
+    billing_period: month
+    annual_price: 249
+    use: personal
+    included_quota: unmetered, rate limited
+    rate_limit: 10 requests/second
+    overage: null
+    endpoints_included: 43
+    features:
+      - REST API
+      - Python SDK
+      - Excel Add-in
+      - Symbol Lists
+      - Market & Miscellaneous Data
+      - Intraday Data
+      - International Stocks
+      - Market Indexes
+      - Derivatives Data
+      - Crypto Currencies
+      - Basic Information
+      - Financial Statements & Ratios
+  - name: Premium
+    price: 69
+    currency: USD
+    billing_period: month
+    annual_price: 599
+    use: personal
+    included_quota: unmetered, rate limited
+    rate_limit: 30 requests/second
+    overage: null
+    endpoints_included: 86
+    features:
+      - Everything in Standard
+      - Real-Time Data
+      - Forex Data
+      - International Financial Statements
+      - Market News
+      - Event Calendars
+      - Economic Data
+      - Insider Trading
+      - Institutional Trading
+      - ETF Data
+      - Mutual Funds
+      - ESG Data
+      - Investment Advisers
+  - name: Professional
+    price: 149
+    currency: USD
+    billing_period: month
+    annual_price: 1299
+    use: commercial-internal
+    included_quota: unmetered, rate limited
+    rate_limit: 30 requests/second
+    overage: null
+    endpoints_included: 86
+    features:
+      - Everything in Premium
+      - MCP Server
+      - Internal Commercial Use
+  - name: Enterprise
+    price: 299
+    currency: USD
+    billing_period: month
+    annual_price: 2599
+    use: commercial-external
+    included_quota: unmetered, rate limited
+    rate_limit: 50 requests/second
+    overage: null
+    endpoints_included: 86
+    features:
+      - Everything in Professional
+      - External Commercial Use
+      - Data Display & Redistribution
+gated_capabilities:
+  - capability: MCP server
+    plans: [Professional, Enterprise]
+    source: https://financialdata.net/mcp-server
+  - capability: Excel add-in
+    plans: [Standard, Premium, Professional, Enterprise]
+  - capability: Real-time quotes
+    plans: [Premium, Professional, Enterprise]
+  - capability: Data display & redistribution
+    plans: [Enterprise]

@@ -1,0 +1,1135 @@
+generated: '2026-08-22'
+personal_data: >-
+  Six of the tools below return named individuals -- getExecutiveCompensation,
+  getInsiderTransactions, getSenateTrading, getHouseTrading and the two
+  investment-adviser tools. All are mandatory public regulatory filings (SEC
+  Form 4 / DEF 14A, STOCK Act, Form ADV), keyed by issuer or trading symbol with
+  no search-by-person parameter, and carrying no contact details. Annotated as a
+  people facet, not withheld. Do not derive a person-lookup tool from them.
+method: searched
+status: published
+source: https://financialdata.net/mcp-server (server URL, naming rule and four published tool names); live JSON-RPC
+  probe of https://financialdata.net/mcp; https://financialdata.net/documentation (endpoint catalogue)
+note: 'FinancialData.Net operates a first-party HOSTED MCP server. It is remote-only: an https endpoint an MCP client
+  POSTs to, with the API key carried in the query string (https://financialdata.net/mcp?key=API_KEY). There is no
+  npx/stdio package — npm was searched and holds no FinancialData.Net package. Access is restricted to the Professional
+  and Enterprise plans, so tools/list is auth-gated: an anonymous POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+  returned HTTP 200 with JSON-RPC error -32001 "Unauthorized" (probed 2026-08-22), which confirms a live MCP JSON-RPC
+  server but yields no inputSchema. The tool list below is therefore NOT a captured tools/list response. The provider
+  states on its MCP page that it "mapped our entire API documentation directly into the MCP server" and that "if
+  an endpoint exists in our docs, your AI has a corresponding tool to call it", and publishes four worked examples
+  of the naming rule (stock-symbols -> getStockSymbols, income-statements -> getIncomeStatements, etf-prices ->
+  getEtfPrices, and getStockPrices). Each tool below is that stated rule applied to a documented endpoint, with
+  name_source marking which four names the provider published verbatim and which are derived. Real inputSchemas
+  require an authenticated introspection with a Professional/Enterprise key; the parameters listed are the documented
+  REST query parameters the tool wraps.'
+deployment:
+  mode: remote
+  endpoint: https://financialdata.net/mcp
+  install: null
+  package: null
+  auth: api-key
+  auth_note: 'API key passed as the `key` query parameter on the endpoint URL: https://financialdata.net/mcp?key=API_KEY.
+    No OAuth: /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource both 404.'
+  verified: probed
+  verified_note: POST tools/list without a key -> HTTP 200, {"jsonrpc":"2.0","id":null,"error":{"code":-32001,"message":"Unauthorized"}}
+    on 2026-08-22.
+  plan_gate: Professional ($149/mo) and Enterprise ($299/mo) subscribers only
+server:
+  name: financialdata-net
+  vendor: FinancialData.Net
+  homepage: https://financialdata.net/mcp-server
+  transport: streamable-http
+  clients_documented:
+  - ChatGPT
+  - Claude
+  - Cursor
+  - custom agents
+  setup_guide: https://financialdata.net/chatgpt-stock-data
+tool_naming_rule: 'get + PascalCase(kebab REST path). Published examples: stock-symbols -> getStockSymbols, income-statements
+  -> getIncomeStatements, etf-prices -> getEtfPrices, stock-prices -> getStockPrices.'
+tool_count: 86
+tools:
+- name: getStockSymbols
+  description: Get a list of stock symbols for publicly traded US and international companies. The list contains
+    thousands of trading symbols as well as the names of the companies whose shares they identify
+  rest_endpoint: GET https://financialdata.net/api/v1/stock-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Free
+  name_source: provider-published
+- name: getInternationalStockSymbols
+  description: 'Retrieve a list of stock symbols for publicly traded international companies. Data is available
+    for the following stock exchanges: Toronto, London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong
+    Kong, Singapore, Indonesia, Malaysia, Korea, Brazil, Mexico, India, Bombay'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-stock-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getEtfSymbols
+  description: An exchange-traded fund (ETF) is a type of investment fund that trades on the stock exchange. ETFs
+    own financial assets such as stocks, bonds, currencies, futures contracts, or commodities. Our API can provide
+    you with a list of a few thousand ETF trading symbols, together with their descriptions
+  rest_endpoint: GET https://financialdata.net/api/v1/etf-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getCommoditySymbols
+  description: The commodity market covers the trading of raw materials like oil, gold, coffee, etc. This API endpoint
+    provides trading symbols and additional information for major commodities.
+  rest_endpoint: GET https://financialdata.net/api/v1/commodity-symbols
+  parameters:
+  - format
+  required_parameters: []
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getOtcSymbols
+  description: The over-the-counter (OTC) market is where securities are traded through a network of brokers and
+    dealers rather than on a centralized exchange. OTC stocks typically indicate ownership of equity in smaller
+    companies that do not meet the requirements for regular listings. Our API gives you access to thousands of OTC
+    symbols and additional information about them
+  rest_endpoint: GET https://financialdata.net/api/v1/otc-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getStockQuotes
+  description: Get real-time stock quotes, including the last price, change, and percentage change. The data covers
+    several thousand US and international companies. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/stock-quotes
+  parameters:
+  - identifiers
+  - format
+  required_parameters:
+  - identifiers
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getStockPrices
+  description: The API endpoint provides more than 10 years of daily historical stock prices and volumes. The data
+    covers several thousand US and international companies
+  rest_endpoint: GET https://financialdata.net/api/v1/stock-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Free
+  name_source: provider-published
+- name: getInternationalStockPrices
+  description: 'Get more than 10 years of daily historical stock prices and volumes. Data is available for the following
+    stock exchanges: Toronto, London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong Kong, Singapore,
+    Indonesia, Malaysia, Korea, Brazil, Mexico, India, Bombay'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-stock-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getMinutePrices
+  description: The API endpoint provides more than 7 years of one-minute historical prices and volumes. The data
+    is available for over 10,000 securities, including US stocks, international stocks, and exchange-traded funds.
+    The timezone used for time values is UTC (Coordinated Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/minute-prices
+  parameters:
+  - identifier
+  - date
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  - date
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getLatestPrices
+  description: Get one-minute stock prices and trading volumes for the current week. Data is available for more
+    than 10,000 securities, including US stocks, international stocks, and exchange-traded funds (ETFs). The timezone
+    used for time values is UTC (Coordinated Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/latest-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getCommodityPrices
+  description: The commodity market comprises the trading of raw materials such as oil, gold, coffee, etc. Our API
+    offers over ten years of end-of-day historical prices and volumes for major commodities
+  rest_endpoint: GET https://financialdata.net/api/v1/commodity-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getOtcPrices
+  description: The over-the-counter (OTC) market is a market in which securities are traded through a network of
+    brokers and dealers rather than on a centralized exchange. OTC stocks often represent ownership of equity in
+    smaller companies that do not meet the requirements for regular listings. The API endpoint provides over ten
+    years of daily historical prices and volumes for more than 10,000 OTC securities
+  rest_endpoint: GET https://financialdata.net/api/v1/otc-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getOtcVolume
+  description: Over-the-counter (OTC) stocks typically represent ownership of equity in smaller companies that do
+    not meet the criteria for regular listings. Some stocks may not be liquid at all. The API endpoint provides
+    information about the monthly share volume traded for a certain security.
+  rest_endpoint: GET https://financialdata.net/api/v1/otc-volume
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Free
+  name_source: derived-from-published-naming-rule
+- name: getIndexSymbols
+  description: A market index measures the value of a portfolio of holdings with certain market characteristics.
+    The API endpoint allows you to get a list of the trading symbols and names of the major market indexes.
+  rest_endpoint: GET https://financialdata.net/api/v1/index-symbols
+  parameters:
+  - format
+  required_parameters: []
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getIndexQuotes
+  description: Get real-time market index quotes, including the last price, change, and percentage change. The data
+    covers major market indexes. The timezone used for time values is EST (Eastern Standard Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/index-quotes
+  parameters:
+  - identifiers
+  - format
+  required_parameters:
+  - identifiers
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getIndexPrices
+  description: Our API allows you to retrieve more than 10 years of daily historical market index prices and trading
+    volumes
+  rest_endpoint: GET https://financialdata.net/api/v1/index-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getIndexConstituents
+  description: Index constituents are the individual components that comprise a market index. These can be stocks,
+    bonds, or other financial instruments. The API endpoint returns a list of constituents for a specific index
+  rest_endpoint: GET https://financialdata.net/api/v1/index-constituents
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getOptionChain
+  description: Options chains display a list of all available option contracts for a specific underlying security.
+    The API endpoint provides option chain data for several thousand US and international companies
+  rest_endpoint: GET https://financialdata.net/api/v1/option-chain
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getOptionPrices
+  description: Stock options give the right to buy or sell shares of a specific stock at a predetermined price and
+    date. The API endpoint provides daily historical stock option prices and volumes
+  rest_endpoint: GET https://financialdata.net/api/v1/option-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getOptionGreeks
+  description: Option Greeks provide a way to measure the sensitivity of an option's price to numerous factors such
+    as the underlying asset price, time till expiration, market volatility, and so on. Our API provides daily historical
+    option Greek values
+  rest_endpoint: GET https://financialdata.net/api/v1/option-greeks
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getFuturesSymbols
+  description: Futures contracts are contracts to purchase or sell a particular underlying asset at a future date.
+    The API endpoint returns a list of futures symbols along with their descriptions
+  rest_endpoint: GET https://financialdata.net/api/v1/futures-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getFuturesPrices
+  description: Get over 10 years of historical end-of-day futures prices and volumes. Data is available for major
+    agricultural, energy, equity, FX, interest rate, and metal futures
+  rest_endpoint: GET https://financialdata.net/api/v1/futures-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getCryptoSymbols
+  description: Cryptocurrency is a digital currency that is secured through cryptography and exists on decentralised
+    networks utilising blockchain technology. The API endpoint returns a list of cryptocurrency pair symbols and
+    related information
+  rest_endpoint: GET https://financialdata.net/api/v1/crypto-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getCryptoInformation
+  description: Retrieve basic information about the cryptocurrency, such as its market cap, total supply, ledger
+    start date, and various other key facts. The API endpoint provides basic information for major cryptocurrencies.
+  rest_endpoint: GET https://financialdata.net/api/v1/crypto-information
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getCryptoQuotes
+  description: Get real-time cryptocurrency pair quotes, including the last price, change, and percentage change.
+    Change is the price difference within a 24-hour time frame. The timezone used for time values is UTC (Coordinated
+    Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/crypto-quotes
+  parameters:
+  - identifiers
+  - format
+  required_parameters:
+  - identifiers
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getCryptoPrices
+  description: This API endpoint allows you to retrieve daily historical cryptocurrency prices and trading volumes.
+    The data covers major cryptocurrency pairs
+  rest_endpoint: GET https://financialdata.net/api/v1/crypto-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getCryptoMinutePrices
+  description: The API endpoint allows you to retrieve one-minute historical cryptocurrency prices and volumes.
+    The data covers major cryptocurrency pairs. The timezone used for time values is UTC (Coordinated Universal
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/crypto-minute-prices
+  parameters:
+  - identifier
+  - date
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  - date
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getForexSymbols
+  description: Forex (foreign exchange) is a global decentralized marketplace for trading national currencies, facilitated
+    by an interconnected network of banks and financial institutions. The API endpoint returns a list of forex currency
+    pairs and corresponding data.
+  rest_endpoint: GET https://financialdata.net/api/v1/forex-symbols
+  parameters:
+  - format
+  required_parameters: []
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getForexQuotes
+  description: Get real-time forex quotes, including the last price, change, and percentage change. The timezone
+    used for time values is UTC (Coordinated Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/forex-quotes
+  parameters:
+  - identifiers
+  - format
+  required_parameters:
+  - identifiers
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getForexPrices
+  description: This API endpoint allows you to retrieve daily historical forex prices and trading volumes. The data
+    covers major currency pairs
+  rest_endpoint: GET https://financialdata.net/api/v1/forex-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getForexMinutePrices
+  description: The API endpoint allows you to retrieve one-minute historical forex prices and volumes. The data
+    covers major currency pairs. The timezone used for time values is UTC (Coordinated Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/forex-minute-prices
+  parameters:
+  - identifier
+  - date
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getCompanyInformation
+  description: This API endpoint provides basic information about the company, such as its LEI number, industry,
+    contact information, and other key facts. The data covers a few thousand US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/company-information
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getInternationalCompanyInformation
+  description: 'Our API provides basic information about the international company, such as its exchange, industry,
+    employee count, and other key facts. Data is available for the following stock exchanges: Toronto, London, Frankfurt,
+    Euronext Paris, Euronext Amsterdam, Tokyo, Hong Kong, Singapore, Indonesia, Malaysia, Korea, Brazil, Mexico,
+    India, Bombay.'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-company-information
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getKeyMetrics
+  description: The API endpoint returns key financial metrics such as price-to-earnings ratio, price-to-book ratio,
+    free cash flow, etc. This information is particularly important for value investors looking to identify undervalued
+    stocks. Data is available for several thousand US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/key-metrics
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getInternationalKeyMetrics
+  description: 'The API endpoint returns key financial metrics, including price-to-earnings ratio, price-to-book
+    ratio, and free cash flow. Data is available for several thousand international companies whose shares are traded
+    on the following stock exchanges: Toronto, London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong
+    Kong, Singapore, Indonesia, Malaysia, Korea, Brazil, Mexico, India, Bombay.'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-key-metrics
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getMarketCap
+  description: Market capitalization, or market cap, is the total value of a company's outstanding common shares
+    held by investors. Market cap is calculated by multiplying the market price per common share by the total number
+    of common shares outstanding. Our API provides historical market cap data for a few thousand companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/market-cap
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getEmployeeCount
+  description: This API endpoint returns the total number of company employees for a particular year. The historical
+    data covers several thousand US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/employee-count
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getExecutiveCompensation
+  description: Executive compensation includes both financial and non-financial benefits provided by their employer.
+    It is usually a combination of a base salary, variable performance-based bonuses, and other benefits. The API
+    endpoint provides historical executive compensation data for several thousand US and international companies
+  rest_endpoint: GET https://financialdata.net/api/v1/executive-compensation
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getSecuritiesInformation
+  description: A security is a tradable financial instrument. The term may refer to a variety of investments, including
+    stocks, bonds, notes, limited partnership interests, investment contracts, and others. This API endpoint provides
+    basic information about the securities, such as their trading symbol, issuer, local and international identification
+    numbers, and other details.
+  rest_endpoint: GET https://financialdata.net/api/v1/securities-information
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getIncomeStatements
+  description: An income statement, also called a profit and loss statement, is a financial statement that shows
+    a company's income and expenses over a period of time. It indicates how revenue is turned into net income, or
+    profit. Using our API, you can access all the individual financial items that make up an income statement
+  rest_endpoint: GET https://financialdata.net/api/v1/income-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: provider-published
+- name: getBalanceSheetStatements
+  description: 'A balance sheet, often known as a statement of financial position, summarizes an individual or organization''s
+    financial balances. A typical corporate balance sheet has two sides: assets on the left and financing on the
+    right, which itself includes liabilities and equity. Our API allows you to access all of the individual financial
+    items that comprise a balance sheet statement'
+  rest_endpoint: GET https://financialdata.net/api/v1/balance-sheet-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getCashFlowStatements
+  description: A cash flow statement is a financial statement that indicates how changes in balance sheet accounts
+    and income affect cash and cash equivalents, breaking down the analysis into operating, investing, and financing
+    activities. Essentially, the cash flow statement is concerned with the flow of cash into and out of the business.
+    Our API allows you to access all of the individual financial items that compose a cash flow statement
+  rest_endpoint: GET https://financialdata.net/api/v1/cash-flow-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getInternationalIncomeStatements
+  description: 'Get all the individual financial items that comprise an income statement. Data is available for
+    several thousand international companies whose shares are traded on the following stock exchanges: Toronto,
+    London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong Kong, Singapore, Indonesia, Malaysia, Korea,
+    Brazil, Mexico, India, Bombay'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-income-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInternationalBalanceSheetStatements
+  description: 'Get all individual financial items that make up a balance sheet statement. Data is available for
+    several thousand international companies whose shares are traded on the following stock exchanges: Toronto,
+    London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong Kong, Singapore, Indonesia, Malaysia, Korea,
+    Brazil, Mexico, India, Bombay'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-balance-sheet-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInternationalCashFlowStatements
+  description: 'Access all the individual financial items that compose a cash flow statement. Data is available
+    for several thousand international companies whose shares are traded on the following stock exchanges: Toronto,
+    London, Frankfurt, Euronext Paris, Euronext Amsterdam, Tokyo, Hong Kong, Singapore, Indonesia, Malaysia, Korea,
+    Brazil, Mexico, India, Bombay'
+  rest_endpoint: GET https://financialdata.net/api/v1/international-cash-flow-statements
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getLiquidityRatios
+  description: Liquidity ratios evaluate how quickly assets can be turned into cash to meet the company's short-term
+    obligations. The API endpoint provides key liquidity ratios calculated based on data obtained from the company's
+    financial statements
+  rest_endpoint: GET https://financialdata.net/api/v1/liquidity-ratios
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getSolvencyRatios
+  description: Solvency ratios evaluate a company's ability to meet its long-term debts and obligations. The API
+    endpoint returns key solvency ratios calculated using data from the company's financial statements
+  rest_endpoint: GET https://financialdata.net/api/v1/solvency-ratios
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getEfficiencyRatios
+  description: Efficiency ratios, also known as activity financial ratios, are used to evaluate how effectively
+    a company uses its assets and resources. The API endpoint provides key efficiency ratios calculated using data
+    obtained from the company's financial statements
+  rest_endpoint: GET https://financialdata.net/api/v1/efficiency-ratios
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getProfitabilityRatios
+  description: Profitability ratios evaluate a company's ability to generate profits from sales or operations, balance
+    sheet assets, or shareholder equity. The API endpoint provides key profitability ratios calculated using data
+    from the company's financial statements
+  rest_endpoint: GET https://financialdata.net/api/v1/profitability-ratios
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getValuationRatios
+  description: Valuation ratios determine how appropriately shares in a company are valued and what type of return
+    an investor is likely to obtain. The API endpoint provides key valuation ratios calculated using data obtained
+    from the company's financial statements
+  rest_endpoint: GET https://financialdata.net/api/v1/valuation-ratios
+  parameters:
+  - identifier
+  - period
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getLatestNews
+  description: Get the latest financial and stock market news articles. Data includes the article headline, text,
+    publication time, and any associated trading symbols. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/latest-news
+  parameters:
+  - date
+  - offset
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getPressReleases
+  description: A company press release is an official statement to the media announcing company updates such as
+    quarterly earnings, leadership changes, and major milestones. Our API provides markdown-formatted press releases
+    for several thousand US and international companies. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/press-releases
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getSecPressReleases
+  description: The U.S. Securities and Exchange Commission (SEC) is the federal agency that regulates the stock
+    market and enforces the disclosure of material financial information to ensure transparency for investors. Our
+    API provides both historical and the latest SEC press releases in markdown format. The timezone used for time
+    values is EST (Eastern Standard Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/sec-press-releases
+  parameters:
+  - date
+  - offset
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getFedPressReleases
+  description: The Federal Reserve (Fed) is the U.S. central bank that influences the stock market by setting monetary
+    policy and interest rates, which directly impact corporate profitability and investor sentiment. Our API provides
+    both historical and the latest Fed press releases in markdown format. The timezone used for time values is EST
+    (Eastern Standard Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/fed-press-releases
+  parameters:
+  - date
+  - offset
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEarningsCalendar
+  description: An earnings release is an official announcement of a company's financial results that often moves
+    its stock price based on performance. Our API allows you to retrieve a list of upcoming earnings releases, including
+    the release date, earnings call time, EPS forecast, etc. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/earnings-calendar
+  parameters:
+  - date
+  - offset
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getIpoCalendar
+  description: An initial public offering (IPO) marks the first time a private company offers its shares to the
+    public, allowing it to raise capital from investors. The API endpoint allows you to retrieve a list of upcoming
+    initial public offerings and additional information, such as the pricing date, offering value, shares offered,
+    and more.
+  rest_endpoint: GET https://financialdata.net/api/v1/ipo-calendar
+  parameters:
+  - date
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getSplitsCalendar
+  description: A stock split occurs when a company increases its outstanding shares to enhance liquidity, deliberately
+    reducing the share price to make the stock more affordable. Our API provides a list of upcoming stock splits,
+    as well as additional information like the split execution date and multiplier, indicating how many new shares
+    investors will receive per existing share.
+  rest_endpoint: GET https://financialdata.net/api/v1/splits-calendar
+  parameters:
+  - date
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getDividendsCalendar
+  description: A dividend is a portion of a company's profits distributed to shareholders, typically paid quarterly
+    in cash or additional shares. This API endpoint allows you to get a list of upcoming dividend payments as well
+    as additional information, like record date, payment date, dividend amount, etc.
+  rest_endpoint: GET https://financialdata.net/api/v1/dividends-calendar
+  parameters:
+  - date
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEconomicCalendar
+  description: Get a schedule of upcoming economic events and major indicator announcements, including Gross Domestic
+    Product (GDP), Consumer Price Index (CPI), unemployment rate, retail sales, etc. Details include event time,
+    country, and previous and actual indicator values. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/economic-calendar
+  parameters:
+  - date
+  - offset
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEconomicIndicators
+  description: Get a list of economic indicators covering categories such as inflation, interest rates, employment,
+    and national output. The list contains thousands of indicators, along with additional metadata
+  rest_endpoint: GET https://financialdata.net/api/v1/economic-indicators
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEconomicIndicatorValues
+  description: This API endpoint returns historical values for a specified economic indicator. The data includes
+    the observation date and recorded numerical value
+  rest_endpoint: GET https://financialdata.net/api/v1/economic-indicator-values
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInsiderTransactions
+  description: Federal securities laws require insiders, including officials, directors, and those holding more
+    than 10% of a company's securities, to report their purchases, sales, and holdings. The API endpoint gives comprehensive
+    information about each of the transactions. The data is available for a few thousand US companies
+  rest_endpoint: GET https://financialdata.net/api/v1/insider-transactions
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getProposedSales
+  description: When an executive officer, director, or affiliate of a company places an order to sell its stock
+    within a three-month period in which the sale exceeds 5,000 shares or the aggregate sales price exceeds $50,000,
+    the order must be reported to the US Securities and Exchange Commission. Our API provides comprehensive information
+    for each of these transactions. The data is available for a few thousand US companies
+  rest_endpoint: GET https://financialdata.net/api/v1/proposed-sales
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getSenateTrading
+  description: Members of the United States Senate are required to disclose any purchase, sale, or exchange of a
+    stock, bond, commodity future, or other security when the transaction exceeds $1,000. The API endpoint provides
+    detailed data about each of the transactions made
+  rest_endpoint: GET https://financialdata.net/api/v1/senate-trading
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getHouseTrading
+  description: Members of the US House of Representatives are obliged to disclose any transactions involving stocks,
+    bonds, commodities futures, or other securities worth more than $1,000. The API endpoint provides comprehensive
+    data about each transaction completed
+  rest_endpoint: GET https://financialdata.net/api/v1/house-trading
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInstitutionalInvestors
+  description: An institutional investor is a company or organization that invests money on behalf of other people.
+    Mutual funds, pensions, and insurance firms are among the examples. Our API provides a list of institutional
+    investors that have invested at least $100 million
+  rest_endpoint: GET https://financialdata.net/api/v1/institutional-investors
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInstitutionalHoldings
+  description: Institutional holdings are the securities in an investment portfolio owned by investment or pension
+    funds, insurance companies, investment firms, or other large organizations that manage funds on behalf of others.
+    The API endpoint provides data on institutional investors with holdings of at least $100 million
+  rest_endpoint: GET https://financialdata.net/api/v1/institutional-holdings
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInstitutionalPortfolioStatistics
+  description: The API endpoint provides statistics about an institutional investor's portfolio. It gives information
+    on how many securities the investor currently holds, the portfolio's worth, the rate of return, and other valuable
+    information
+  rest_endpoint: GET https://financialdata.net/api/v1/institutional-portfolio-statistics
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEtfQuotes
+  description: Get real-time exchange-traded fund (ETF) quotes, including the last price, change, and percentage
+    change. The data covers several thousand major ETFs. The timezone used for time values is EST (Eastern Standard
+    Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/etf-quotes
+  parameters:
+  - identifiers
+  - format
+  required_parameters:
+  - identifiers
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEtfPrices
+  description: An exchange-traded fund (ETF) is a type of investment fund that trades on the stock exchange. ETFs
+    own financial assets such as stocks, bonds, currencies, futures contracts, or commodities. Our API provides
+    more than 10 years of end-of-day historical prices and volumes for major exchange-traded funds
+  rest_endpoint: GET https://financialdata.net/api/v1/etf-prices
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: provider-published
+- name: getEtfMinutePrices
+  description: The API endpoint allows you to retrieve one-minute historical exchange-traded fund (ETF) prices and
+    volumes. The data covers several thousand major ETFs. The timezone used for time values is UTC (Coordinated
+    Universal Time)
+  rest_endpoint: GET https://financialdata.net/api/v1/etf-minute-prices
+  parameters:
+  - identifier
+  - date
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEtfHoldings
+  description: An exchange-traded fund (ETF) is an investment fund holding a collection of assets that trades on
+    the stock exchange just like an individual share. Our API provides information on the securities held by exchange-traded
+    funds
+  rest_endpoint: GET https://financialdata.net/api/v1/etf-holdings
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getMutualFundSymbols
+  description: A mutual fund is an investment fund that pools money from multiple investors to buy securities. Mutual
+    funds are not traded on stock exchanges but can be purchased and sold through brokerage firms or fund companies.
+    This API endpoint returns a few thousand fund symbols, along with additional information
+  rest_endpoint: GET https://financialdata.net/api/v1/mutual-fund-symbols
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getMutualFundHoldings
+  description: A mutual fund is an investment fund that pools money from numerous investors to purchase securities.
+    Mutual funds are not traded on stock exchanges, but they can be bought and sold through brokerage firms or fund
+    companies. Our API provides information on the securities held by mutual funds
+  rest_endpoint: GET https://financialdata.net/api/v1/mutual-fund-holdings
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getMutualFundStatistics
+  description: The API endpoint provides statistics about mutual funds. It gives essential information about fund
+    assets, liabilities, returns, realized gains, and so on
+  rest_endpoint: GET https://financialdata.net/api/v1/mutual-fund-statistics
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEsgScores
+  description: ESG risk score measures a company's exposure to environmental, social, and corporate governance risks
+    in its daily operations. The score is calculated on a numerical scale ranging from 0 (low risk) to 100 (high
+    risk). The API endpoint returns historical ESG risk score values for several thousand US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/esg-scores
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEsgRatings
+  description: ESG corporate rating is a metric used for evaluating a company's sustainability performance; ratings
+    range from D- (poor performance) to A+ (excellent performance). ESG industry rank shows how a company's ESG
+    risk score compares to that of other companies in the same industry. The API endpoint provides ratings for publicly
+    traded US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/esg-ratings
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getIndustryEsgScores
+  description: Industry ESG score evaluates how well an industry manages risks related to ESG (environmental, social,
+    and governance) factors. The score is calculated on a numerical scale ranging from 0 (low risk) to 100 (high
+    risk).
+  rest_endpoint: GET https://financialdata.net/api/v1/industry-esg-scores
+  parameters:
+  - date
+  - format
+  required_parameters:
+  - date
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInvestmentAdviserNames
+  description: Investment advisers are financial specialists who give investment advice or conduct security analyses
+    for a fee. In the United States, they must register with the Securities and Exchange Commission if they handle
+    $25 million or more in client assets. The API endpoint returns the legal names of over 15,000 registered investment
+    advisers
+  rest_endpoint: GET https://financialdata.net/api/v1/investment-adviser-names
+  parameters:
+  - offset
+  - format
+  required_parameters: []
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getInvestmentAdviserInformation
+  description: Our API provides valuable information about registered investment advisers, including the value of
+    assets under management, number of accounts, contact details, etc. The data covers over 15,000 registered investment
+    advisers, with most of them managing $25 million or more in client assets.
+  rest_endpoint: GET https://financialdata.net/api/v1/investment-adviser-information
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getAnalystConsensus
+  description: Analyst consensus represents the collective price targets and ratings from professional equity research
+    analysts covering a publicly traded company. Aggregating the estimates gives a view of overall sentiment rather
+    than relying on a single opinion. The API endpoint returns consensus metrics, including 12-month forward price
+    targets as well as buy, hold, and sell recommendation counts.
+  rest_endpoint: GET https://financialdata.net/api/v1/analyst-consensus
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Premium
+  name_source: derived-from-published-naming-rule
+- name: getEarningsReleases
+  description: An earnings release is an official public announcement revealing a company's profitability during
+    a specific time period. It affects the share price, which rises or falls in response to the company's performance.
+    Our API provides extensive information on the release, including actual and predicted earnings, release timing,
+    and so on.
+  rest_endpoint: GET https://financialdata.net/api/v1/earnings-releases
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getInitialPublicOfferings
+  description: An initial public offering (IPO) is when shares of a private firm are made available to the public
+    for the first time. It enables a company to raise equity capital from public investors. The API endpoint provides
+    more than 10 years of data on all initial public offerings.
+  rest_endpoint: GET https://financialdata.net/api/v1/initial-public-offerings
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getStockSplits
+  description: A stock split occurs when a company increases the number of outstanding shares to improve the stock's
+    liquidity. A company decides to do a stock split to intentionally lower the price of a single share, making
+    the company's stock more affordable. Our API provides stock split data for several thousand US and international
+    companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/stock-splits
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getDividends
+  description: A dividend is the distribution of a company's earnings to its shareholders. Dividends are paid out
+    quarterly and may be in the form of cash or reinvestment in additional stock. The API endpoint provides dividend
+    information for several thousands of US and international companies.
+  rest_endpoint: GET https://financialdata.net/api/v1/dividends
+  parameters:
+  - identifier
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule
+- name: getShortInterest
+  description: Short interest represents the number of shares of a company that are currently sold short and have
+    not yet been covered. The short interest ratio, also known as days to cover, represents the number of days it
+    would take for all short-sold shares to be covered or repurchased in the market. Our API provides short interest
+    data for over 15,000 securities
+  rest_endpoint: GET https://financialdata.net/api/v1/short-interest
+  parameters:
+  - identifier
+  - offset
+  - format
+  required_parameters:
+  - identifier
+  plan_required: Standard
+  name_source: derived-from-published-naming-rule

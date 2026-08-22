@@ -1,0 +1,209 @@
+generated: '2026-08-22'
+method: derived
+source: >-
+  https://financialdata.net/documentation (documented response fields and query parameters),
+  live probes of https://financialdata.net/api/v1/* and https://financialdata.net/.well-known/*,
+  https://financialdata.net/pricing (dataset coverage table)
+note: >-
+  There is no OpenAPI to read securitySchemes or media types out of, so every assertion below cites
+  either a documented response field on a named endpoint or an observed HTTP response. Cross-cutting
+  conformance is thin — no OAuth, no OIDC, no RFC 9457, no JSON:API, no discovery documents. The
+  interesting finding is the DOMAIN layer: the payloads are keyed on the standard securities
+  identifier schemes and the response shapes track the SEC filing forms the data is sourced from,
+  which is a real integration advantage for anyone who already speaks those schemes.
+standards:
+  - id: oauth2
+    conforms: false
+    evidence: >-
+      No OAuth anywhere. /.well-known/oauth-authorization-server and
+      /.well-known/oauth-protected-resource both 404 (probed 2026-08-22). Auth is a single API key
+      in the `key` query parameter.
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 (probed 2026-08-22).
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Error responses are application/json {"message": "<string>"} with no type/title/detail/instance
+      and no application/problem+json media type (probed 401 on /api/v1/stock-symbols).
+  - id: json-api
+    conforms: false
+    evidence: Responses are bare JSON arrays of flat objects; no data/attributes/relationships envelope.
+  - id: rfc8594-sunset-deprecation
+    conforms: false
+    evidence: No Sunset or Deprecation headers, and no deprecation policy published.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 (probed 2026-08-22).
+  - id: rfc8615-well-known
+    conforms: false
+    evidence: Every /.well-known/ path probed returns 404. See well-known/financialdata-net-well-known.yml.
+  - id: pagination
+    conforms: true
+    evidence: >-
+      Uniform offset pagination on 57 of the 86 endpoints via the `offset` query parameter, with a stated
+      per-call record limit (300 or 500) in each endpoint description. Documented on the endpoint
+      pages and in the FAQ. No cursor, no total, no next link.
+  - id: idempotency
+    conforms: na
+    evidence: Read-only API — all 86 documented operations are GET. Nothing to make idempotent.
+  - id: content-negotiation
+    conforms: partial
+    evidence: >-
+      JSON and CSV are both offered, but selected with a `format` query parameter rather than an
+      Accept header, so standard HTTP content negotiation does not apply.
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Live JSON-RPC 2.0 MCP endpoint at https://financialdata.net/mcp; an anonymous tools/list
+      returned a well-formed JSON-RPC error object (code -32001) rather than an HTTP error, which is
+      the MCP/JSON-RPC convention. Auth-gated to Professional/Enterprise, so the protocol version and
+      capability set could not be read.
+  - id: a2a
+    conforms: false
+    evidence: /.well-known/agent-card.json and /.well-known/agent.json both 404 (probed 2026-08-22).
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      No event, streaming or webhook surface is published for the data API. The only push channel is
+      incident notification on the Instatus status page, which is status tooling, not an API event
+      surface.
+  - id: fix-protocol
+    conforms: false
+    evidence: >-
+      No FIX session, no FIX message types. Named here because it is the securities regime's headline
+      standard; this is a read-only HTTP data API, not an order-routing surface, so FIX is not the
+      relevant standard for it.
+  - id: mifid-ii
+    conforms: false
+    evidence: >-
+      US-focused SEC/FINRA-sourced data; no MiFID II RTS 27/28 reporting surface and no EU venue
+      transparency claim.
+  - id: iso-20022
+    conforms: false
+    evidence: No ISO 20022 message types; payloads are bespoke flat JSON.
+domain_standards:
+  note: >-
+    REWARD-ONLY signature check. FinancialData.Net does not DECLARE conformance to a securities
+    standard in prose, but its payload schema carries the standard securities identifier schemes as
+    first-class fields, and several response shapes are direct projections of named SEC filing forms.
+    Each row below points at the exact documented field on the exact endpoint. This is what lets a
+    consumer who already keys on ISIN/LEI/CUSIP/FIGI/CIK join this data to their existing security
+    master with no bespoke crosswalk.
+  identifier_schemes:
+    - id: isin
+      standard: ISO 6166 — International Securities Identification Number
+      conforms: true
+      evidence: >-
+        Documented response field `isin_number` on /securities-information, /company-information,
+        /international-company-information, /mutual-fund-holdings and /etf-holdings.
+    - id: lei
+      standard: ISO 17442 — Legal Entity Identifier
+      conforms: true
+      evidence: >-
+        Documented response field `lei_number` on /company-information,
+        /investment-adviser-information, /mutual-fund-holdings and /etf-holdings.
+    - id: cusip
+      standard: ANSI X9.6 / CUSIP Global Services
+      conforms: true
+      evidence: >-
+        Documented response field `cusip_number` on /securities-information,
+        /institutional-holdings, /mutual-fund-holdings and /etf-holdings.
+    - id: figi
+      standard: OMG Financial Instrument Global Identifier
+      conforms: true
+      evidence: Documented response field `figi_identifier` on /securities-information.
+    - id: sec-cik
+      standard: SEC EDGAR Central Index Key
+      conforms: true
+      evidence: >-
+        Documented response field `central_index_key` on 29 of the 86 endpoints — the second most
+        common field in the whole API after `trading_symbol`.
+    - id: sic
+      standard: SEC/OSHA Standard Industrial Classification
+      conforms: true
+      evidence: Documented response fields `sic_code` and `sic_description` on /company-information.
+    - id: ein
+      standard: IRS Employer Identification Number
+      conforms: true
+      evidence: Documented response field `ein_number` on /company-information.
+  filing_form_projections:
+    - id: sec-form-13f
+      standard: SEC Form 13F Information Table
+      conforms: true
+      evidence: >-
+        /institutional-holdings mirrors the 13F Information Table column set: issuer_name,
+        title_of_security, cusip_number, market_value, amount_of_securities, shares_or_principal,
+        put_or_call, investment_discretion, period_of_report.
+    - id: sec-form-4
+      standard: SEC Forms 3/4/5 — statements of beneficial ownership
+      conforms: true
+      evidence: >-
+        /insider-transactions mirrors the Form 4 table: relationship_to_issuer,
+        is_derivatives_transaction, transaction_code, acquired_or_disposed,
+        securities_owned_following_transaction, ownership_form, nature_of_indirect_ownership.
+    - id: sec-form-144
+      standard: SEC Form 144 — notice of proposed sale of securities
+      conforms: true
+      evidence: >-
+        /proposed-sales mirrors Form 144: seller_name, broker_name,
+        amount_of_securities_to_be_sold, approximate_date_of_sale, acquisition_period_start/end,
+        nature_of_acquisition_transaction, names_of_persons_from_whom_acquired.
+    - id: sec-form-n-port
+      standard: SEC Form N-PORT — monthly portfolio holdings for registered funds
+      conforms: true
+      evidence: >-
+        /mutual-fund-holdings carries the N-PORT identifiers and fields series_id, class_id,
+        payoff_profile, denomination_currency, percentage_value_compared_to_assets.
+    - id: sec-form-adv
+      standard: SEC Form ADV — investment adviser registration
+      conforms: true
+      evidence: >-
+        /investment-adviser-information carries Form ADV Part 1A items: legal_name,
+        primary_business_name, form_of_business, assets_under_management, number_of_accounts.
+    - id: stock-act
+      standard: STOCK Act periodic transaction reports (US Congress)
+      conforms: true
+      evidence: >-
+        /senate-trading and /house-trading carry the PTR fields name_of_reporting_person,
+        type_of_reporting_person, report_date, transaction_type, owner_type, asset_type, amount.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  marketing_claims:
+    - claim: SOC2 Ready
+      location: https://financialdata.net (homepage trust badges)
+      substantiated: false
+      note: >-
+        "SOC 2 Ready" is explicitly NOT a SOC 2 attestation — it asserts preparedness, not an audit.
+        No report, no auditor, no date, no trust centre and no request process is published anywhere
+        on the site. Recorded as a claim, not a certification.
+    - claim: 99.9% Uptime
+      location: https://financialdata.net (homepage trust badges)
+      substantiated: partial
+      note: >-
+        Presented as a system attribute, not as a contractual SLA — the Terms of Service commit to
+        no availability level and disclaim liability for downtime. The public Instatus status page
+        did show 100% 90-day uptime on both monitored components when checked 2026-08-22, so the
+        claim is consistent with the published telemetry; it is simply not a promise.
+    - claim: AES-256
+      location: https://financialdata.net (homepage trust badges)
+      substantiated: false
+      note: Encryption-at-rest claim with no security page, whitepaper or scope statement behind it.
+  evidence: >-
+    No SOC 2, ISO 27001, PCI DSS, HIPAA, FedRAMP or GDPR compliance page, no trust center, and no
+    security page. probe-security-programs.py returned vdp=none trust=none on 2026-08-22. No
+    `Compliance` pointer is emitted in apis.yml, deliberately — asserting one here would credit a
+    program that does not exist. The homepage carries three trust badges ("SOC2 Ready", "99.9%
+    Uptime", "AES-256") — captured under marketing_claims above — but a badge is not a program and
+    none of the three resolves to a document.
+licensing_posture:
+  note: >-
+    Relevant to the securities/market-data regime, which turns on entitlement and redistribution
+    rather than on a wire protocol. FinancialData.Net publishes its redistribution terms openly on
+    the pricing page and in the Terms of Service, tiered rather than negotiated: personal use only
+    on Free/Standard/Premium, internal commercial use on Professional, and external commercial use
+    plus data display and redistribution on Enterprise. Source data is attributed to public
+    regulators (SEC, FINRA, Federal Reserve) rather than to licensed exchange feeds.
+  source: https://financialdata.net/pricing, https://financialdata.net/terms-of-service

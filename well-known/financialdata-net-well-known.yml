@@ -1,0 +1,36 @@
+generated: '2026-08-22'
+method: probed
+source: live HTTPS probes of https://financialdata.net/.well-known/*
+note: >-
+  Every /.well-known/ path probed on the single host FinancialData.Net operates returned a real
+  HTTP 404 with the site's plain "Not Found" body (179 bytes, not an SPA shell), so nothing was
+  saved and NO WellKnown or SecurityTxt pointer was emitted in apis.yml. The API host, the docs
+  host and the MCP host are all the same origin (financialdata.net), so one host covers the whole
+  estate. Recorded absence, not an unmeasured gap.
+hosts:
+  - host: financialdata.net
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null

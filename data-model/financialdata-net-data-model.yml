@@ -1,0 +1,472 @@
+generated: '2026-08-22'
+method: derived
+source: https://financialdata.net/documentation — the 86 published endpoint sections, their query parameters and
+  their sample response payloads
+note: 'Derived by reading the documented sample response of every one of the 86 v1 endpoints and grouping them
+  by their identifying key. There is no OpenAPI and no $ref graph to walk, so the entities below are inferred
+  from field co-occurrence in the provider''s own published examples, not from a schema the provider ships. The
+  API models entities implicitly: it has no object endpoints, no ids beyond the domain identifiers, and no links
+  between records — a consumer assembles the graph itself by joining on trading_symbol and central_index_key.
+  That is the single most useful thing to know before integrating, and it is nowhere in the documentation.'
+entity_count: 20
+endpoint_count: 86
+join_keys:
+- key: trading_symbol
+  present_on_endpoints: 72
+  role: Universal instrument key across price, quote, fundamental, filing, news and ESG datasets.
+- key: central_index_key
+  present_on_endpoints: 29
+  role: SEC CIK — the entity key across all regulator-sourced datasets (filings, holdings, advisers, ESG).
+- key: cusip_number
+  present_on_endpoints: 4
+  role: Authoritative key on holdings rows, because 13F and N-PORT are filed on CUSIP rather than ticker.
+- key: isin_number
+  present_on_endpoints: 5
+  role: International instrument key; the join to a non-US security master.
+- key: lei_number
+  present_on_endpoints: 4
+  role: Legal entity key on issuers, funds and advisers.
+- key: indicator_id
+  present_on_endpoints: 2
+  role: Namespace for the macroeconomic series; disjoint from the securities graph.
+entities:
+- name: Security
+  primary_key: trading_symbol
+  description: 'A tradable instrument identified by its ticker. The spine of the whole API: trading_symbol appears
+    in 72 of the 86 documented response shapes and is the join key between every price, fundamental, filing and
+    rating dataset.'
+  endpoints:
+  - /stock-symbols
+  - /international-stock-symbols
+  - /etf-symbols
+  - /otc-symbols
+  - /commodity-symbols
+  - /crypto-symbols
+  - /forex-symbols
+  - /futures-symbols
+  - /index-symbols
+  - /mutual-fund-symbols
+  - /securities-information
+  representative_fields:
+  - trading_symbol
+  - registrant_name
+  - title_of_security
+  - description
+  - security_type
+  - exchange
+  note: 'Symbols are namespaced by market convention rather than by a type field: international listings carry
+    an exchange suffix (SHEL.L, 000080.KS), indices a caret (^GSPC), forex a pair (EURUSD), crypto a pair (BTCUSD).
+    An agent cannot tell from the string alone which endpoint family a symbol belongs to; it must know which symbol
+    list it came from.'
+- name: SecurityIdentifiers
+  primary_key: trading_symbol
+  description: The crosswalk between a ticker and the standard identifier schemes. This is the record that makes
+    the API joinable to an external security master.
+  endpoints:
+  - /securities-information
+  representative_fields:
+  - trading_symbol
+  - issuer_name
+  - cusip_number
+  - isin_number
+  - figi_identifier
+  - security_type
+- name: Company
+  primary_key: central_index_key
+  description: The filing entity behind a security, keyed on the SEC Central Index Key (CIK). central_index_key
+    is the second most common field in the API, present in 29 of 86 response shapes, and is what links market
+    data to regulator-sourced filings.
+  endpoints:
+  - /company-information
+  - /international-company-information
+  - /key-metrics
+  - /international-key-metrics
+  - /market-cap
+  - /employee-count
+  - /executive-compensation
+  representative_fields:
+  - central_index_key
+  - trading_symbol
+  - registrant_name
+  - isin_number
+  - lei_number
+  - ein_number
+  - exchange
+  - sic_code
+  - sic_description
+  - industry
+  - founding_date
+  - chief_executive_officer
+  - number_of_employees
+  - website
+  - market_cap
+  - shares_outstanding
+- name: PriceBar
+  primary_key: trading_symbol + date|time
+  description: An OHLCV bar. One shape reused across every asset class and every interval — daily, minute and
+    real-time endpoints return the same field set, differing only in the time key and the timezone.
+  endpoints:
+  - /stock-prices
+  - /international-stock-prices
+  - /minute-prices
+  - /latest-prices
+  - /commodity-prices
+  - /otc-prices
+  - /index-prices
+  - /etf-prices
+  - /etf-minute-prices
+  - /crypto-prices
+  - /crypto-minute-prices
+  - /forex-prices
+  - /forex-minute-prices
+  - /futures-prices
+  - /option-prices
+  representative_fields:
+  - trading_symbol
+  - date
+  - time
+  - open
+  - high
+  - low
+  - close
+  - volume
+  note: Daily bars key on `date` (YYYY-MM-DD); intraday bars key on `time` ("YYYY-MM-DD HH:MM:SS"). Quote timestamps
+    are EST, minute timestamps are UTC, and no offset is carried in the payload.
+- name: Quote
+  primary_key: trading_symbol
+  description: A real-time last-trade snapshot. Premium and above.
+  endpoints:
+  - /stock-quotes
+  - /etf-quotes
+  - /index-quotes
+  - /crypto-quotes
+  - /forex-quotes
+  representative_fields:
+  - trading_symbol
+  - registrant_name
+  - time
+  - price
+  - change
+  - percentage_change
+- name: FinancialStatement
+  primary_key: central_index_key + fiscal_year + fiscal_period
+  description: A period-scoped financial statement line-item set. Three statements x domestic/international =
+    six endpoints, all sharing the same period key.
+  endpoints:
+  - /income-statements
+  - /balance-sheet-statements
+  - /cash-flow-statements
+  - /international-income-statements
+  - /international-balance-sheet-statements
+  - /international-cash-flow-statements
+  representative_fields:
+  - trading_symbol
+  - central_index_key
+  - registrant_name
+  - fiscal_year
+  - fiscal_period
+  - period_end_date
+  - revenue
+  - net_income
+  - earnings_per_share_diluted
+- name: FinancialRatio
+  primary_key: trading_symbol + period
+  description: Derived ratio sets computed off the statements, split into five thematic endpoints.
+  endpoints:
+  - /liquidity-ratios
+  - /solvency-ratios
+  - /efficiency-ratios
+  - /profitability-ratios
+  - /valuation-ratios
+  representative_fields:
+  - trading_symbol
+  - central_index_key
+  - fiscal_year
+  - fiscal_period
+  - period_end_date
+- name: InsiderTransaction
+  primary_key: central_index_key + insider_central_index_key + transaction_date
+  description: An SEC Form 4 beneficial-ownership transaction. Carries its own person-level CIK, so insiders are
+    separately identifiable entities.
+  endpoints:
+  - /insider-transactions
+  - /proposed-sales
+  representative_fields:
+  - trading_symbol
+  - central_index_key
+  - insider_name
+  - insider_central_index_key
+  - relationship_to_issuer
+  - transaction_date
+  - transaction_code
+  - amount_of_securities
+  - price_per_security
+  - acquired_or_disposed
+  - ownership_form
+- name: LegislatorTrade
+  primary_key: name_of_reporting_person + transaction_date
+  description: A STOCK Act periodic transaction report from a member of Congress. Keyed on the person, not on
+    a CIK — this dataset does not join to Company except through trading_symbol.
+  endpoints:
+  - /senate-trading
+  - /house-trading
+  representative_fields:
+  - name_of_reporting_person
+  - type_of_reporting_person
+  - report_date
+  - transaction_type
+  - transaction_date
+  - owner_type
+  - trading_symbol
+  - asset_name
+  - asset_type
+  - amount
+- name: InstitutionalInvestor
+  primary_key: central_index_key
+  description: A 13F filer. /institutional-investors is the roster; /institutional-holdings is its position table;
+    /institutional-portfolio-statistics is the aggregate.
+  endpoints:
+  - /institutional-investors
+  - /institutional-holdings
+  - /institutional-portfolio-statistics
+  representative_fields:
+  - central_index_key
+  - registrant_name
+  - period_of_report
+- name: Holding
+  primary_key: holder + issuer + period_of_report
+  description: A position line. The same shape serves 13F institutional holdings, N-PORT mutual fund holdings
+    and ETF holdings, keyed on cusip_number/isin_number rather than on ticker alone.
+  endpoints:
+  - /institutional-holdings
+  - /mutual-fund-holdings
+  - /etf-holdings
+  representative_fields:
+  - issuer_name
+  - trading_symbol
+  - cusip_number
+  - isin_number
+  - title_of_security
+  - market_value
+  - amount_of_securities
+  - portfolio_weight
+- name: Fund
+  primary_key: fund_symbol | series_id
+  description: A mutual fund or ETF. Mutual funds carry SEC series_id/class_id; ETFs are addressed by ticker.
+  endpoints:
+  - /mutual-fund-symbols
+  - /mutual-fund-statistics
+  - /mutual-fund-holdings
+  - /etf-symbols
+  - /etf-holdings
+  representative_fields:
+  - fund_name
+  - fund_symbol
+  - series_id
+  - class_id
+  - central_index_key
+  - period_of_report
+- name: InvestmentAdviser
+  primary_key: central_index_key
+  description: An SEC Form ADV registrant.
+  endpoints:
+  - /investment-adviser-names
+  - /investment-adviser-information
+  representative_fields:
+  - legal_name
+  - primary_business_name
+  - central_index_key
+  - lei_number
+  - assets_under_management
+  - number_of_accounts
+- name: Option
+  primary_key: trading_symbol (contract)
+  description: A listed option contract, with a separate greeks surface.
+  endpoints:
+  - /option-chain
+  - /option-prices
+  - /option-greeks
+  representative_fields:
+  - trading_symbol
+  - open
+  - high
+  - low
+  - close
+  - volume
+- name: Index
+  primary_key: trading_symbol (^ prefixed)
+  description: A market index and its constituent list — the only many-to-many edge expressed as its own endpoint.
+  endpoints:
+  - /index-symbols
+  - /index-quotes
+  - /index-prices
+  - /index-constituents
+  representative_fields:
+  - trading_symbol
+  - registrant_name
+- name: EconomicIndicator
+  primary_key: indicator_id
+  description: A macroeconomic time series. The one dataset in the API with no securities key at all — indicator_id
+    is its own namespace.
+  endpoints:
+  - /economic-indicators
+  - /economic-indicator-values
+  representative_fields:
+  - indicator_id
+  - indicator_name
+  - category
+  - frequency
+  - units
+  - date
+  - value
+- name: NewsItem
+  primary_key: publication_time
+  description: A news article or press release. Links to securities through a MULTI-VALUED trading_symbols field,
+    not the singular trading_symbol used everywhere else.
+  endpoints:
+  - /latest-news
+  - /press-releases
+  - /sec-press-releases
+  - /fed-press-releases
+  representative_fields:
+  - trading_symbols
+  - publication_time
+  - article_headline
+  - article_text
+- name: CalendarEvent
+  primary_key: date + trading_symbol
+  description: Forward-looking corporate and macro events, published up to two months ahead.
+  endpoints:
+  - /earnings-calendar
+  - /ipo-calendar
+  - /splits-calendar
+  - /dividends-calendar
+  - /economic-calendar
+  representative_fields:
+  - trading_symbol
+  - date
+- name: CorporateAction
+  primary_key: trading_symbol + date
+  description: Realised corporate actions, the historical counterpart to the calendars.
+  endpoints:
+  - /dividends
+  - /stock-splits
+  - /initial-public-offerings
+  - /earnings-releases
+  representative_fields:
+  - trading_symbol
+  - date
+- name: EsgAssessment
+  primary_key: trading_symbol | industry
+  description: ESG scores and letter ratings at company level, plus an industry-level aggregate.
+  endpoints:
+  - /esg-scores
+  - /esg-ratings
+  - /industry-esg-scores
+  representative_fields:
+  - trading_symbol
+  - central_index_key
+  - registrant_name
+  - industry
+  - date
+  - esg_corporate_rating
+  - esg_industry_rank
+relationships:
+- from: Security
+  to: Company
+  type: belongs_to
+  via: trading_symbol -> central_index_key
+  evidence: /company-information returns both trading_symbol and central_index_key on the same record.
+- from: Security
+  to: SecurityIdentifiers
+  type: has_one
+  via: trading_symbol
+  evidence: /securities-information is keyed on trading_symbol and returns cusip_number, isin_number, figi_identifier.
+- from: Security
+  to: PriceBar
+  type: has_many
+  via: trading_symbol + date|time
+  evidence: Every price endpoint takes ?identifier=<symbol> and returns trading_symbol on each bar.
+- from: Security
+  to: Quote
+  type: has_one
+  via: trading_symbol
+  evidence: /stock-quotes?identifiers=MSFT,AAPL returns one current record per symbol.
+- from: Company
+  to: FinancialStatement
+  type: has_many
+  via: central_index_key + fiscal_year + fiscal_period
+  evidence: /income-statements returns central_index_key, fiscal_year, fiscal_period, period_end_date.
+- from: Company
+  to: FinancialRatio
+  type: has_many
+  via: central_index_key + fiscal_year + fiscal_period
+  evidence: Ratio endpoints repeat the statement period key.
+- from: Company
+  to: InsiderTransaction
+  type: has_many
+  via: central_index_key
+  evidence: /insider-transactions returns the issuer central_index_key alongside insider_central_index_key.
+- from: Company
+  to: EsgAssessment
+  type: has_many
+  via: central_index_key + date
+  evidence: /esg-ratings returns central_index_key and date.
+- from: Company
+  to: CorporateAction
+  type: has_many
+  via: trading_symbol + date
+  evidence: /dividends and /stock-splits are addressed by ?identifier=<symbol>.
+- from: InstitutionalInvestor
+  to: Holding
+  type: has_many
+  via: central_index_key + period_of_report
+  evidence: /institutional-holdings returns investor_name, central_index_key and period_of_report per position
+    row.
+- from: Holding
+  to: Security
+  type: belongs_to
+  via: cusip_number | isin_number | trading_symbol
+  evidence: Holdings rows carry cusip_number and trading_symbol; the CUSIP is authoritative because 13F is filed
+    on CUSIP.
+- from: Fund
+  to: Holding
+  type: has_many
+  via: series_id | fund_symbol + period_of_report
+  evidence: /mutual-fund-holdings and /etf-holdings return the fund key plus per-position rows.
+- from: Index
+  to: Security
+  type: has_many
+  via: index trading_symbol -> constituent trading_symbol
+  evidence: /index-constituents?identifier=^GSPC returns the constituent symbol list.
+- from: NewsItem
+  to: Security
+  type: has_many
+  via: trading_symbols (comma-joined list)
+  evidence: /latest-news returns a PLURAL trading_symbols field, unlike every other endpoint.
+- from: EconomicIndicator
+  to: EconomicIndicatorValue
+  type: has_many
+  via: indicator_id + date
+  evidence: /economic-indicator-values?identifier=<indicator_id> returns indicator_id, date, value.
+- from: InvestmentAdviser
+  to: Company
+  type: none
+  via: null
+  evidence: Advisers carry their own central_index_key and lei_number; no documented edge joins an adviser to
+    an issuer.
+- from: LegislatorTrade
+  to: Security
+  type: belongs_to
+  via: trading_symbol
+  evidence: /senate-trading and /house-trading return trading_symbol and asset_name; there is no CIK on these
+    rows.
+gaps:
+- No object/detail endpoints — every endpoint returns a collection, so there is no canonical single-record representation
+  of any entity.
+- 'No hypermedia: records carry no links, no self URLs and no ids that resolve anywhere.'
+- 'Two identifier namespaces never meet: EconomicIndicator (indicator_id) shares no key with the securities graph.'
+- NewsItem uses a plural `trading_symbols` field where the rest of the API uses singular `trading_symbol` — a
+  naming inconsistency an agent will trip on.
+- 'Symbol namespaces are conventional, not typed: ^GSPC, SHEL.L, EURUSD and BTCUSD all live in the same `trading_symbol`
+  field with no discriminator.'

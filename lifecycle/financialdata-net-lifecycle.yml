@@ -1,0 +1,77 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/changelog, https://financialdata.net/terms-of-service, https://financialdata.instatus.com, https://financialdata.net/documentation
+note: >-
+  Versioning is by URL path and has never moved off v1. The provider keeps a public dated changelog
+  and a public status page, but publishes NO deprecation policy, NO sunset commitment, NO SLA and no
+  uptime guarantee — the Terms of Service instead reserve the right to "modify, price change, suspend
+  or discontinue" the service at any time without notice or liability. Nothing has actually been
+  removed: all 18 dated changelog entries since the 2024-12-10 initial release are additive.
+versioning:
+  scheme: url-path
+  current_version: v1
+  first_released: '2024-12-10'
+  version_header: null
+  date_pinning: false
+  breaking_changes_since_launch: 0
+  note: >-
+    Two entries move endpoints between DOCUMENTATION groups (Etf Quotes/Etf Prices into "Etf Data"
+    on 2025-11-23; Mutual Fund Symbols into "Mutual Funds" on 2025-09-24). Those are navigation
+    changes, not URL changes — the /api/v1/ paths were unaffected.
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no notice period, no RFC 8594 Sunset/Deprecation headers, and no
+    deprecated endpoints. The absence of removals to date is the only assurance on offer.
+sla:
+  published: false
+  uptime_commitment: null
+  support_response_commitment: null
+  note: >-
+    No SLA at any tier, including Enterprise ($299/mo). The Terms of Service disclaim liability for
+    availability and cap total liability at the amount paid. Support is a contact form at
+    https://financialdata.net/contact-us and the published address info@financialdata.net; no
+    response-time commitment. The homepage does display a "99.9% Uptime" trust badge; it is a
+    marketing statement, not a contractual commitment, and nothing in the Terms of Service backs it.
+    The Instatus page independently showed 100% 90-day uptime on both monitored components when
+    checked 2026-08-22.
+status_page:
+  url: https://financialdata.instatus.com
+  provider: Instatus
+  components:
+    - name: Website
+      status_at_check: Operational
+      uptime_90d: 100%
+    - name: API (v1)
+      status_at_check: Operational
+      uptime_90d: 100%
+  subscribe_channels: [email, slack, microsoft-teams, google-chat, webhook, rss, atom, api]
+  checked: '2026-08-22'
+  http_status: 200
+  note: >-
+    Instatus-hosted, publicly readable, with a machine-consumable RSS/Atom/JSON surface and webhook
+    subscriptions for incident notifications. It monitors two components only (Website, API v1) —
+    the MCP server is not separately monitored.
+changelog:
+  url: https://financialdata.net/changelog
+  entries: 18
+  first: '2024-12-10'
+  latest: '2026-07-24'
+  machine_readable: false
+  see: changelog/financialdata-net-changelog.yml
+support:
+  contact_form: https://financialdata.net/contact-us
+  email: info@financialdata.net
+  faq: https://financialdata.net/faq
+  status: https://financialdata.instatus.com
+subscription_lifecycle:
+  minimum_term: 1 month
+  cancellation: Any time, from the account dashboard; effective at the end of the current period.
+  refunds: None — all purchases are non-refundable (Terms of Service).
+  auto_renew: true
+  source: https://financialdata.net/terms-of-service, https://financialdata.net/faq

@@ -1,0 +1,95 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/changelog
+note: >-
+  A public, dated, human-readable changelog covering every release since launch. No RSS/Atom/JSON
+  feed and no per-entry permalinks — it is one HTML page — so it is not machine-consumable. Every
+  entry is ADDITIVE: 18 releases in 19 months, all of them new endpoints, new endpoint groups or new
+  first-party tooling. No removals, no breaking changes, no deprecations. The recent window is
+  captured below in full; the tail back to the 2024-12-10 initial release is summarised.
+scheme: dated-release-notes
+url: https://financialdata.net/changelog
+current_version: v1
+entry_count: 18
+first_entry: '2024-12-10'
+latest_entry: '2026-07-24'
+entries:
+  - date: '2026-07-24'
+    breaking: false
+    additions:
+      - Analyst Consensus endpoint (Miscellaneous Data)
+      - International Key Metrics endpoint (Basic Information)
+      - New endpoint group - Economic Data
+      - Economic Indicators endpoint
+      - Economic Indicator Values endpoint
+    highlights: >-
+      Largest recent release; adds a whole new data domain (macroeconomic indicators) and shipped the
+      same day as fdnpy 0.5.0 on PyPI, so the SDK is in step with the API.
+  - date: '2026-06-07'
+    breaking: false
+    additions:
+      - Latest News endpoint (Market News)
+      - Etf Minute Prices endpoint (Etf Data)
+  - date: '2026-04-20'
+    breaking: false
+    additions:
+      - Official Excel Add-in launched for spreadsheet workflows
+    highlights: Tooling release, not an API change.
+  - date: '2026-02-16'
+    breaking: false
+    additions:
+      - Official Model Context Protocol (MCP) Server launched for AI agents
+    highlights: >-
+      The agent surface. Gated to Professional and Enterprise plans; see
+      mcp/financialdata-net-mcp.yml.
+  - date: '2026-02-09'
+    breaking: false
+    additions:
+      - New endpoint group - Market News
+      - Press Releases endpoint
+      - Sec Press Releases endpoint
+      - Fed Press Releases endpoint
+  - date: '2025-12-27'
+    breaking: false
+    additions:
+      - New endpoint group - Forex Data
+      - Forex Symbols, Forex Quotes, Forex Prices, Forex Minute Prices endpoints
+  - date: '2025-11-23'
+    breaking: false
+    additions:
+      - New endpoint group - Etf Data
+      - Etf Holdings endpoint
+    changes:
+      - Etf Quotes and Etf Prices moved into the Etf Data documentation group (documentation grouping only; URLs unchanged)
+  - date: '2025-11-08'
+    breaking: false
+    additions:
+      - Latest Prices endpoint (Market Data)
+  - date: '2025-10-22'
+    breaking: false
+    additions:
+      - New endpoint group - Event Calendars
+      - Earnings Calendar, Ipo Calendar, Splits Calendar, Dividends Calendar, Economic Calendar endpoints
+  - date: '2025-09-24'
+    breaking: false
+    additions:
+      - Index Quotes endpoint (Market Indexes)
+    changes:
+      - Mutual Fund Symbols moved into the Mutual Funds documentation group (documentation grouping only)
+  - date: '2025-09-03'
+    breaking: false
+    additions:
+      - Stock Quotes, Etf Quotes, Crypto Quotes endpoints
+    highlights: Introduces the real-time quote surface (Premium and above).
+  - date: '2025-08-08'
+    breaking: false
+    additions:
+      - New endpoint group - Crypto Currencies
+      - Crypto Symbols, Crypto Information, Crypto Prices, Crypto Minute Prices endpoints
+earlier_entries_summary: >-
+  2025-06-25 international financial statements (income/balance sheet/cash flow); 2025-06-17 new
+  Market Indexes group (Index Symbols, Index Prices, Index Constituents); 2025-06-06 Key Metrics;
+  2025-05-05 international stock symbols/prices and international company information; 2025-03-08
+  new Derivatives Data group (Option Chain, Option Prices, Option Greeks, Futures Symbols, Futures
+  Prices); 2025-02-18 new Esg Data group (Esg Scores, Esg Ratings, Industry Esg Scores);
+  2024-12-10 initial release.

@@ -1,0 +1,147 @@
+generated: '2026-08-22'
+method: searched
+source: https://financialdata.net/documentation, https://financialdata.net/faq, https://financialdata.net/changelog, live probes of https://financialdata.net/api/v1/*
+note: >-
+  Cross-cutting runtime semantics for the FinancialData.Net v1 REST API, read from the provider's
+  own documentation and confirmed against live probes. The API is uniform to an unusual degree:
+  86 endpoints, all GET, all flat collections of JSON objects, all sharing the same three
+  conventions (?key=, offset, format). There is no OpenAPI to derive from — every statement here
+  cites the documentation page or a probe.
+auth:
+  style: api-key-in-query
+  parameter: key
+  detail: See authentication/financialdata-net-authentication.yml
+http:
+  methods: [GET]
+  detail: >-
+    Every documented operation is a GET. No POST/PUT/PATCH/DELETE surface is published — the API is
+    read-only market data. That single fact is what makes idempotency, dry-run and reversibility
+    all `na` below.
+  base_url: https://financialdata.net/api/v1/
+  path_style: >-
+    One flat kebab-case resource segment per dataset (/stock-prices, /income-statements,
+    /institutional-holdings). No nesting, no path parameters — the subject of a call is passed as
+    the `identifier` query parameter, not in the path.
+content_negotiation:
+  style: query-parameter
+  parameter: format
+  values: [json, csv]
+  present_on: all 86 documented endpoints
+  default: json
+  note: >-
+    Format is selected with ?format=csv, not with an Accept header. Documented on every endpoint.
+    Response Content-Type observed as application/json on error responses.
+pagination:
+  style: offset
+  parameters:
+    - name: offset
+      type: integer
+      default: 0
+      description: Number of records to skip.
+      present_on: 57 of the 86 documented endpoints (the other 29 return a bounded set with no paging)
+  response_fields: []
+  detail: >-
+    There is no envelope and no cursor: responses are a bare JSON array. The caller learns nothing
+    about totals, remaining pages or whether more data exists — the documented technique (FAQ,
+    "How do I retrieve all the data available for a particular endpoint?") is to keep incrementing
+    `offset` by the endpoint's record limit until a short or empty array comes back. Record limits
+    are 500 on the symbol-list endpoints and 300 on most data endpoints, stated in each endpoint's
+    own description. This is the weakest part of the contract for an agent: no next-link, no
+    has_more, no total_count.
+  record_limits: [300, 500]
+filtering:
+  parameters:
+    - name: identifier
+      description: A single trading symbol, e.g. MSFT. Used by most detail endpoints.
+    - name: identifiers
+      description: Comma-separated list of trading symbols, e.g. MSFT,AAPL. Used by the quote endpoints.
+    - name: date
+      description: YYYY-MM-DD, on the intraday/minute-price and news endpoints.
+    - name: period
+      description: '"year" or "quarter", on the financial-statement and ratio endpoints.'
+  note: Filtering is per-endpoint and positional in the query string; there is no generic filter grammar.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+  note: No user-supplied metadata surface — read-only API.
+request_id_tracing:
+  supported: false
+  note: >-
+    No request-id or correlation-id header was observed on any probed response, and none is
+    documented. An agent that needs to reference a specific call in a support ticket has no handle
+    to quote.
+versioning:
+  style: url-path
+  current: v1
+  detail: >-
+    The major version is in the path (/api/v1/). No version header, no date-based version pinning,
+    no beta/preview channel. v1 has been the only version since the 2024-12-10 initial release; the
+    changelog records 18 dated releases, all of them ADDITIVE (new endpoints, new endpoint groups,
+    two endpoints moved between documentation groups) with no removals or breaking changes.
+  see: lifecycle/financialdata-net-lifecycle.yml
+error_envelope:
+  shape: '{"message": "<human-readable string>"}'
+  media_type: application/json
+  rfc9457: false
+  detail: >-
+    Errors are a single-key JSON object with a human-readable `message`. There is no machine-readable
+    error code, no `type` URI, no `title`/`detail`/`instance` split, and no field-level validation
+    detail. 404s on unknown paths are served as HTML by the web tier, not JSON. See
+    errors/financialdata-net-problem-types.yml.
+rate_limit_signaling:
+  headers: []
+  detail: >-
+    None. Limits are published per pricing tier only; no X-RateLimit-*, RateLimit-* or Retry-After
+    header appears on any probed response. See rate-limits/financialdata-net-rate-limits.yml.
+idempotency:
+  supported: na
+  detail: >-
+    Not applicable: the published surface is GET-only, so every request is inherently idempotent and
+    there is nothing for an idempotency key to protect. No idempotency header is documented, and
+    none is needed. Recorded `na` deliberately rather than `false` — this is a read-only API, not an
+    API that forgot to ship idempotency.
+dry_run_mode:
+  supported: na
+  detail: Not applicable — no write surface to rehearse.
+reversibility:
+  applicable: false
+  grade: na
+  detail: >-
+    Not applicable. Every one of the 86 documented operations is a GET against market data; the API
+    exposes no create, update, delete, cancel, refund, void or restore operation, so there is no
+    action an agent can take through this API that would need to be taken back. The only reversible
+    commercial action is the SUBSCRIPTION itself, and that lives outside the API: the Terms of
+    Service state a subscriber can cancel at any time from the account dashboard with the
+    cancellation effective immediately at the end of the current billing period, and that all
+    purchases are non-refundable — so the subscription is cancellable but NOT refundable, and no
+    refund window exists to record.
+    (https://financialdata.net/terms-of-service, https://financialdata.net/faq)
+  write_surfaces: []
+data_conventions:
+  timezones:
+    - surface: Stock/ETF/index quotes
+      timezone: EST
+      source: endpoint descriptions on https://financialdata.net/documentation
+    - surface: Minute prices (stocks, ETFs, crypto, forex)
+      timezone: UTC
+      source: endpoint descriptions on https://financialdata.net/documentation
+  timezone_note: >-
+    The API mixes two timezones across surfaces and states which is which per endpoint. An agent
+    joining a quote to a minute bar must convert; nothing in the payload carries an offset.
+  date_format: 'YYYY-MM-DD (dates), "YYYY-MM-DD HH:MM:SS" (timestamps, no offset suffix)'
+  join_key: >-
+    trading_symbol is the universal join key — it appears in 72 of the 86 documented response
+    shapes. central_index_key (SEC CIK) is the secondary key across the regulator-sourced datasets.
+    See data-model/financialdata-net-data-model.yml.
+  adjustments: Stock prices are adjusted for splits (FAQ).
+  average_response_size: 50-100 KB (FAQ)
+cross_links:
+  authentication: authentication/financialdata-net-authentication.yml
+  errors: errors/financialdata-net-problem-types.yml
+  lifecycle: lifecycle/financialdata-net-lifecycle.yml
+  rate_limits: rate-limits/financialdata-net-rate-limits.yml
+  plans: plans/financialdata-net-plans-pricing.yml
+  data_model: data-model/financialdata-net-data-model.yml
