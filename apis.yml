@@ -1,0 +1,95 @@
+name: FinancialData.Net
+description: >-
+  A financial-data provider offering a single REST API (with JSON/CSV responses) covering stock, ETF, crypto, forex, and
+  derivatives market data, company fundamentals, financial statements, news, economic indicators, insider/institutional
+  trading, and ESG data sourced from public regulators (SEC, FINRA). Also offers a hosted MCP server, an official Python
+  SDK, and an Excel add-in.
+url: https://raw.githubusercontent.com/api-evangelist/financialdata-net/refs/heads/main/apis.yml
+created: '2026-08-22'
+modified: '2026-08-22'
+specificationVersion: '0.21'
+tags:
+  - finance
+  - financial-data
+  - stock-market-api
+  - market-data
+  - equities
+  - etf
+  - crypto
+  - forex
+  - derivatives-options
+  - fundamentals
+  - insider-trading
+  - institutional-13f
+  - esg
+  - economic-data
+  - mcp
+  - investing
+  - trading
+apis:
+  - name: FinancialData.Net REST API
+    description: >-
+      REST API for financial and market data covering equities, ETFs, crypto, forex, derivatives, fundamentals,
+      financial statements, news, economic indicators, and more. Responses in JSON/CSV; API-key auth via ?key= query
+      parameter.
+    humanURL: https://financialdata.net/documentation
+    baseURL: https://financialdata.net/api/v1/
+    tags:
+      - finance
+      - financial-data
+      - stock-market-api
+      - market-data
+      - equities
+      - etf
+      - crypto
+      - forex
+      - derivatives-options
+      - fundamentals
+      - insider-trading
+      - institutional-13f
+      - esg
+      - economic-data
+      - mcp
+      - investing
+      - trading
+    properties:
+      - type: Documentation
+        url: https://financialdata.net/documentation
+  - name: FinancialData.Net MCP Server
+    description: >-
+      Hosted MCP server mapping the entire REST API documentation into callable MCP tools (e.g., getStockSymbols,
+      getIncomeStatements). Advertised for ChatGPT, Claude, Cursor, and custom agents; authenticated with API key via
+      query string. Available to Professional and Enterprise subscribers.
+    humanURL: https://financialdata.net/mcp-server
+    baseURL: https://financialdata.net/mcp
+    tags:
+      - finance
+      - financial-data
+      - stock-market-api
+      - market-data
+      - equities
+      - etf
+      - crypto
+      - forex
+      - derivatives-options
+      - fundamentals
+      - insider-trading
+      - institutional-13f
+      - esg
+      - economic-data
+      - mcp
+      - investing
+      - trading
+    properties:
+      - type: MCPServer
+        url: https://financialdata.net/mcp
+      - type: Documentation
+        url: https://financialdata.net/mcp-server
+maintainers:
+  - FN: FinancialData.Net
+    url: https://financialdata.net
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 90
+  at: '2026-08-22T08:47:53.698Z'
