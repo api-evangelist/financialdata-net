@@ -5,6 +5,17 @@ description: >-
   trading, and ESG data sourced from public regulators (SEC, FINRA). Also offers a hosted MCP server, an official Python
   SDK, and an Excel add-in.
 url: https://raw.githubusercontent.com/api-evangelist/financialdata-net/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 created: '2026-08-22'
 modified: '2026-08-22'
 specificationVersion: '0.21'
