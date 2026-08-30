@@ -20,6 +20,24 @@ created: '2026-08-22'
 modified: '2026-08-22'
 specificationVersion: '0.21'
 tags:
+  - Finance
+  - Financial Data
+  - stock-market-api
+  - Market Data
+  - Equities
+  - ETFs
+  - Crypto
+  - Forex
+  - derivatives-options
+  - Fundamentals
+  - Insider Trading
+  - institutional-13f
+  - ESG
+  - Economic Data
+  - MCP
+  - Investing
+  - Trading
+tags_raw:
   - finance
   - financial-data
   - stock-market-api
@@ -46,6 +64,24 @@ apis:
     humanURL: https://financialdata.net/documentation
     baseURL: https://financialdata.net/api/v1/
     tags:
+      - Finance
+      - Financial Data
+      - stock-market-api
+      - Market Data
+      - Equities
+      - ETFs
+      - Crypto
+      - Forex
+      - derivatives-options
+      - Fundamentals
+      - Insider Trading
+      - institutional-13f
+      - ESG
+      - Economic Data
+      - MCP
+      - Investing
+      - Trading
+    tags_raw:
       - finance
       - financial-data
       - stock-market-api
@@ -86,6 +122,24 @@ apis:
     humanURL: https://financialdata.net/mcp-server
     baseURL: https://financialdata.net/mcp
     tags:
+      - Finance
+      - Financial Data
+      - stock-market-api
+      - Market Data
+      - Equities
+      - ETFs
+      - Crypto
+      - Forex
+      - derivatives-options
+      - Fundamentals
+      - Insider Trading
+      - institutional-13f
+      - ESG
+      - Economic Data
+      - MCP
+      - Investing
+      - Trading
+    tags_raw:
       - finance
       - financial-data
       - stock-market-api
