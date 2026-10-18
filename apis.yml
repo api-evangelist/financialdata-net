@@ -41,8 +41,8 @@ tags:
   - Market Data
   - Stocks
   - ETFs
-  - Crypto
-  - Forex
+  - Cryptocurrency
+  - Foreign Exchange
   - derivatives-options
   - Fundamentals
   - Insider Trading
@@ -70,6 +70,7 @@ tags_raw:
   - mcp
   - investing
   - trading
+  - Forex
 apis:
   - name: FinancialData.Net REST API
     description: >-
@@ -85,8 +86,8 @@ apis:
       - Market Data
       - Stocks
       - ETFs
-      - Crypto
-      - Forex
+      - Cryptocurrency
+      - Foreign Exchange
       - derivatives-options
       - Fundamentals
       - Insider Trading
@@ -114,6 +115,7 @@ apis:
       - mcp
       - investing
       - trading
+      - Forex
     properties:
       - type: Documentation
         url: https://financialdata.net/documentation
@@ -143,8 +145,8 @@ apis:
       - Market Data
       - Stocks
       - ETFs
-      - Crypto
-      - Forex
+      - Cryptocurrency
+      - Foreign Exchange
       - derivatives-options
       - Fundamentals
       - Insider Trading
@@ -172,6 +174,7 @@ apis:
       - mcp
       - investing
       - trading
+      - Forex
     properties:
       - type: MCPServer
         url: mcp/financialdata-net-mcp.yml
