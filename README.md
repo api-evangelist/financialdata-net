@@ -1,4 +1,4 @@
-# financialdata-net
+# FinancialData.Net
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,4 +64,112 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-A financial-data provider offering a single REST API (with JSON/CSV responses) covering stock, ETF, crypto, forex, and derivatives market data, company fundamentals, financial statements, news, economic indicators, insider/institutional trading, and ESG data sourced from public regulators (SEC, FINR
+A financial-data provider offering a single REST API (with JSON/CSV responses) covering stock, ETF, crypto, forex, and derivatives market data, company fundamentals, financial statements, news, economic indicators, insider/institutional trading, and ESG data sourced from public regulators (SEC, FINRA). Also offers a hosted MCP server, an official Python SDK, and an Excel add-in.
+
+**Areas:** Finance · Financial Data · stock-market-api · Market Data · Stocks · ETFs · Cryptocurrency · Foreign Exchange · derivatives-options · Fundamentals · Insider Trading · institutional-13f
+
+## FinancialData.Net on APIs.io
+
+Everything profiled for FinancialData.Net is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/financialdata-net/](https://apis.io/providers/financialdata-net/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [FinancialData.Net REST API](https://apis.io/apis/financialdata-net/financialdatanet-rest-api/) — REST API for financial and market data covering equities, ETFs, crypto, forex, derivatives, fundamentals, financial statements, news, economic indicators,…
+- [FinancialData.Net MCP Server](https://apis.io/apis/financialdata-net/financialdatanet-mcp-server/) — Hosted MCP server mapping the entire REST API documentation into callable MCP tools (e.g., getStockSymbols, getIncomeStatements). Advertised for ChatGPT,…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [financialdata-net](https://apis.io/servers/financialdata-net/financialdata-net/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Financialdata Net Authentication](https://apis.io/security/financialdata-net/financialdata-net-authentication/)
+- [Financialdata Net Domain Security](https://apis.io/security/financialdata-net/financialdata-net-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Financialdata Net Plans Pricing](https://apis.io/plans/financialdata-net/financialdata-net-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Financialdata Net Rate Limits](https://apis.io/rate-limits/financialdata-net/financialdata-net-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://financialdata.net)
+- [Pricing](https://financialdata.net/pricing)
+- [Sign up](https://financialdata.net/sign-up)
+- [Support](https://financialdata.net/contact-us)
+- [Terms of service](https://financialdata.net/terms-of-service)
+- [Privacy policy](https://financialdata.net/privacy-policy)
+- [GitHub](https://github.com/financialdatanet)
+- [Status](https://financialdata.instatus.com)
+
+## API Evangelist rating
+
+**Kin Score 42.0** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 6.5 |
+| Contract governance | 4.5 |
+| Operational transparency | 50.0 |
+| Developer ergonomics | 50.0 |
+| Access clarity | 76.3 |
+
+**Agent readiness 17.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 28.7** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/financialdata-net/](https://apis.io/providers/financialdata-net/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for FinancialData.Net: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/financialdata-net/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
